@@ -1,139 +1,180 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Messenger — چت دایرکت با NestJS و Next.js
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+اپلیکیشن چت دایرکت (Direct Messenger) با بک‌اند **NestJS** و فرانت‌اند **Next.js**. ارتباط لحظه‌ای پیام‌ها با **Socket.io** انجام می‌شود و متن پیام‌ها و فایل‌های آپلودی برای امنیت بیشتر رمزنگاری می‌گردند. احراز هویت با **JWT Access/Refresh Token** پیاده‌سازی شده است.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## قابلیت‌های اصلی
 
-## Description
+- ثبت‌نام و ورود کاربر با Access Token و Refresh Token
+- رفرش خودکار توکن در فرانت‌اند هنگام دریافت خطای 401
+- ساخت مکالمه دایرکت (دو نفره) بین کاربران
+- ارسال پیام متنی و پیام همراه با فایل (عکس/ویدیو)
+- دریافت پیام‌های جدید به‌صورت لحظه‌ای با Socket.io
+- رمزنگاری متن پیام‌ها و فایل‌های آپلودی پیش از ذخیره‌سازی
+- محدودسازی دسترسی به فایل‌ها فقط برای اعضای همان مکالمه
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## معماری پروژه
 
-## Project setup
-
-```bash
-$ npm install
+```
+messenger/
+├─ src/                  بک‌اند NestJS
+└─ web/                  فرانت‌اند Next.js
 ```
 
-## Local HTTPS
+## تکنولوژی‌ها
 
-Nest can run directly over HTTPS without a domain by loading a local key and certificate.
+### بک‌اند (NestJS / TypeScript)
+- `@nestjs/core`, `@nestjs/common`, `@nestjs/config`
+- `@nestjs/typeorm` + `typeorm` + `mysql2` (دیتابیس MySQL)
+- احراز هویت: `@nestjs/jwt`, `@nestjs/passport`, `passport-jwt`, `bcrypt`
+- Realtime: `@nestjs/websockets`, `socket.io`
+- آپلود فایل: `@nestjs/platform-express` (FileInterceptor) + `multer`
+- رمزنگاری: ماژول `crypto` با الگوریتم AES-256-GCM
 
-Add these to `.env.local` when you want HTTPS:
+### فرانت‌اند (Next.js 15 / React)
+- `next`, `react`, `react-dom`
+- `socket.io-client` برای realtime
+- معماری App Router (`next/navigation`)
+- ذخیره توکن‌ها در `localStorage` با کلید `messenger-auth`
 
-```bash
-HTTPS_KEY_PATH=certs/localhost-key.pem
-HTTPS_CERT_PATH=certs/localhost.pem
-```
+## متغیرهای محیطی بک‌اند
 
-Then start the API and open `https://localhost:3000`.
-
-For local trusted certificates, `mkcert` is the easiest option:
-
-```bash
-mkcert -install
-mkcert -key-file certs/localhost-key.pem -cert-file certs/localhost.pem localhost 127.0.0.1 ::1
-```
-
-## Compile and run the project
-
-```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
-```
-
-## Database config
-
-The API does not finish booting until MySQL is reachable.
-
-For VPS deployments, prefer `127.0.0.1` instead of `localhost` for `DB_HOST`, because
-`localhost` may resolve to IPv6 first (`::1`) while MySQL is only listening on IPv4.
-
-Example:
-
-```bash
+```env
 DB_HOST=127.0.0.1
 DB_PORT=3306
 DB_USERNAME=root
-DB_PASSWORD=your-password
+DB_PASSWORD=your_db_password
 DB_NAME=messenger
+DB_SYNC=false
+
+PORT=3000
+
+# HTTPS (اختیاری)
+HTTPS_KEY_PATH=
+HTTPS_CERT_PATH=
+
+# JWT
+JWT_SECRET=your_jwt_secret
+JWT_REFRESH_SECRET=your_refresh_secret
+JWT_REFRESH_EXPIRES_IN=30d
+
+# رمزنگاری
+APP_ENCRYPTION_KEY=your_encryption_key
+
+# آپلود
+UPLOAD_DIR=uploads
 ```
 
-If startup stops after TypeScript watch mode, check that MySQL is running and that the
-configured host, port, username, and password are correct.
+فایل‌های آپلودی از طریق مسیر استاتیک `/uploads/...` سرویس‌دهی می‌شوند.
 
-## Run tests
+## متغیر محیطی فرانت‌اند
 
+```env
+NEXT_PUBLIC_API_BASE_URL=http://localhost:3000
+```
+
+## نصب و اجرا
+
+### بک‌اند
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+npm install
+npm run start:dev
 ```
 
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
+### فرانت‌اند
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+cd web
+npm install
+npm run dev
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+## فلوی احراز هویت
 
-## Resources
+1. کاربر در `/login` یا `/register` وارد می‌شود؛ پاسخ شامل `accessToken`، `refreshToken` و اطلاعات `user` است.
+2. این اطلاعات در `localStorage` ذخیره شده و کاربر به `/chat` هدایت می‌شود.
+3. در هر درخواست، اگر پاسخ سرور `401` باشد، فرانت‌اند به‌صورت خودکار با `refreshToken` توکن جدید می‌گیرد و درخواست را دوباره اجرا می‌کند.
+4. هنگام خروج (`/auth/logout`)، `refreshTokenHash` کاربر در دیتابیس پاک و توکن‌ها از `localStorage` حذف می‌شوند.
 
-Check out a few resources that may come in handy when working with NestJS:
+Access Token شامل `sub` (شناسه کاربر) و `username` است. Refresh Token جداگانه امضا شده و پیش از ذخیره در دیتابیس با bcrypt هش می‌شود.
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+## فلوی چت
 
-## Support
+1. پس از ورود، لیست مکالمات کاربر (`getConversations`) دریافت می‌شود.
+2. با انتخاب یک مکالمه، پیام‌های قبلی از API گرفته شده و کاربر با رویداد `chat:join` به room مربوطه در Socket.io ملحق می‌شود.
+3. ارسال پیام متنی یا همراه با فایل، پیام را در دیتابیس ذخیره و با رویداد `message:new` برای تمام اعضای room ارسال می‌کند.
+4. فرانت‌اند با دریافت `message:new` پیام جدید را به لیست پیام‌ها اضافه می‌کند.
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+## API ها
 
-## Stay in touch
+### Auth
+| Method | Endpoint | توضیح |
+|---|---|---|
+| POST | `/auth/register` | ثبت‌نام (`username`, `password`) |
+| POST | `/auth/login` | ورود |
+| POST | `/auth/refresh` | دریافت توکن جدید با `refreshToken` |
+| GET | `/auth/me` | دریافت اطلاعات کاربر جاری |
+| POST | `/auth/logout` | خروج |
+| POST | `/auth/change-password` | تغییر رمز عبور |
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+### Conversations
+| Method | Endpoint | توضیح |
+|---|---|---|
+| POST | `/conversations` | ساخت یا بازیابی مکالمه دایرکت با یک کاربر |
+| GET | `/conversations` | لیست مکالمات کاربر جاری |
 
-## License
+### Messages
+| Method | Endpoint | توضیح |
+|---|---|---|
+| POST | `/messages` | ارسال پیام متنی (`conversationId`, `text`) |
+| GET | `/messages?conversationId=...` | دریافت پیام‌های یک مکالمه |
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
-# messenger
+### Uploads
+| Method | Endpoint | توضیح |
+|---|---|---|
+| POST | `/uploads/media` | آپلود فایل (عکس/ویدیو، حداکثر ۲۵ مگابایت) |
+| GET | `/uploads/media/:fileName` | دریافت فایل رمزگشایی‌شده |
+
+تمام endpointهای بالا به‌جز register/login به JWT نیاز دارند.
+
+## مدل داده (Entities)
+
+- **User**
+- **Conversation**
+- **ConversationMember**
+- **Message**
+- **Attachment** (فایل‌های ضمیمه)
+
+یک مکالمه دایرکت زمانی بازیابی می‌شود که دقیقاً دو عضو مشخص در آن حضور داشته باشند؛ در غیر این صورت مکالمه جدید ساخته می‌شود.
+
+## Realtime (Socket.io)
+
+- اتصال با توکن JWT از طریق `handshake.auth.token` یا هدر `Authorization`
+- رویداد `chat:join` — عضویت در room مربوط به یک مکالمه (`conversation:{id}`) پس از بررسی عضویت کاربر
+- رویداد `message:new` — ارسال پیام جدید به تمام اعضای room
+
+## رمزنگاری
+
+- **متن پیام‌ها:** با AES-256-GCM رمزنگاری و پیش از نمایش رمزگشایی می‌شوند (پیشوند `enc:v1:` برای تشخیص متن رمزشده)
+- **فایل‌ها:** پیش از ذخیره روی دیسک رمزنگاری و هنگام دانلود رمزگشایی می‌شوند
+- **کنترل دسترسی فایل:** پیش از رمزگشایی فایل، عضویت کاربر در مکالمه مربوطه بررسی می‌شود؛ در غیر این صورت خطای «فایل یافت نشد» بازگردانده می‌شود
+
+## ساختار پوشه‌ها
+
+```
+src/
+├─ auth/            کنترلر، سرویس، گارد و DTOهای احراز هویت
+├─ users/            مدیریت کاربران
+├─ conversations/     مدیریت مکالمات
+├─ messages/           مدیریت پیام‌ها
+├─ uploads/             آپلود و مدیریت فایل‌ها
+├─ security/             encryption.service.ts
+├─ realtime/              chat.gateway.ts
+└─ main.ts                تنظیمات HTTPS، CORS، فایل استاتیک، ValidationPipe
+
+web/
+├─ app/              صفحات login، register، chat
+├─ components/        auth-screen، chat-screen، media-attachment
+└─ lib/
+   ├─ api.ts           wrapper برای fetch به همراه منطق رفرش توکن
+   ├─ storage.ts         مدیریت localStorage
+   └─ types.ts            تایپ‌های داده
+```
