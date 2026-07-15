@@ -1,0 +1,6 @@
+@baseUrl = http://localhost:3000
+@token = REPLACE_WITH_JWT
+
+### Find exact username
+GET {{baseUrl}}/users/username/sara
+Authorization: Bearer {{token}}

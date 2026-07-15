@@ -1,0 +1,15 @@
+@baseUrl = http://localhost:3000
+@token = REPLACE_WITH_JWT
+
+### Create conversation with user 2
+POST {{baseUrl}}/conversations
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "username": "sara"
+}
+
+### List my conversations
+GET {{baseUrl}}/conversations
+Authorization: Bearer {{token}}

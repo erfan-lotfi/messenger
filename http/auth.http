@@ -1,0 +1,56 @@
+@baseUrl = http://localhost:3000
+@accessToken = REPLACE_WITH_ACCESS_TOKEN
+@refreshToken = REPLACE_WITH_REFRESH_TOKEN
+
+### Register Ali
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "username": "ali",
+  "password": "secret123"
+}
+
+### Register Sara
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "username": "sara",
+  "password": "secret123"
+}
+
+### Login Ali
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "username": "ali",
+  "password": "secret123"
+}
+
+### Get current user
+GET {{baseUrl}}/auth/me
+Authorization: Bearer {{accessToken}}
+
+### Refresh tokens
+POST {{baseUrl}}/auth/refresh
+Content-Type: application/json
+
+{
+  "refreshToken": "{{refreshToken}}"
+}
+
+### Change password
+POST {{baseUrl}}/auth/change-password
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "currentPassword": "secret123",
+  "newPassword": "secret456"
+}
+
+### Logout
+POST {{baseUrl}}/auth/logout
+Authorization: Bearer {{accessToken}}

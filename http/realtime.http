@@ -1,0 +1,11 @@
+@baseUrl = http://localhost:3000
+
+### Realtime reminder
+GET {{baseUrl}}/
+
+### How to test Socket.IO manually
+# 1. Connect a Socket.IO client to ws://localhost:3000
+# 2. Emit event: chat:join
+# 3. Payload: { "conversationId": 1 }
+# 4. Create a message with messages.http
+# 5. Listen for event: message:new

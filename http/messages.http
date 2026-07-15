@@ -1,0 +1,16 @@
+@baseUrl = http://localhost:3000
+@token = REPLACE_WITH_JWT
+
+### Create message
+POST {{baseUrl}}/messages
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "conversationId": 1,
+  "text": "Hello Sara, this is my first message."
+}
+
+### List messages for conversation 1
+GET {{baseUrl}}/messages?conversationId=1
+Authorization: Bearer {{token}}

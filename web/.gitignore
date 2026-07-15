@@ -1,0 +1,23 @@
+# Next.js build output
+.next/
+out/
+
+# Dependencies
+node_modules/
+
+# Caches
+.cache/
+*.tsbuildinfo
+
+# Testing
+coverage/
+
+# Logs
+*.log
+
+# Environment variables
+.env*
+
+# OS
+.DS_Store
+

@@ -1,0 +1,25 @@
+# Dependencies
+node_modules/
+
+# Environment variables
+.env
+.env.*
+
+# OS
+.DS_Store
+
+# Build outputs
+dist/
+build/
+.next/
+.cache/
+
+# Logs
+*.log
+
+# Uploads / user-generated content
+uploads/
+
+# Optional: npm debug logs
+npm-debug.log*
+
